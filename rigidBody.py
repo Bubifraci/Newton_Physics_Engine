@@ -2,7 +2,7 @@ from vector import vector
 import copy
 
 class rigidBody:
-    gravity = vector([0, 9.81, 0])
+    gravity = vector([0, 9.81])
 
     def __init__(self, allForces, mass, startTime, startPos):
         self.allForces = allForces
@@ -13,13 +13,13 @@ class rigidBody:
         self.allImpulses = []
         self.allForces = []
         self.isGrounded = False
-        self.position = vector([0, 0, 0])
-        self.velocity = vector([0, 0, 0])
+        self.position = vector([0, 0])
+        self.velocity = vector([0, 0])
         self.currentTime = 0
 
     def compute(self):
         dT = self.currentTime - self.startTime
-        totalForce = vector([0, 0, 0])
+        totalForce = vector([0, 0])
         for force in self.allForces:
             totalForce.addToVector(force)
         totalForce.addToVector(self.gravity)
