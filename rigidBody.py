@@ -4,7 +4,7 @@ import copy
 class rigidBody:
     gravity = vector([0, 9.81])
 
-    def __init__(self, allForces, mass, startTime, startPos):
+    def __init__(self, allForces, mass, startTime, startPos, bottom):
         self.allForces = allForces
         self.mass = mass
         self.startTime = startTime
@@ -16,29 +16,30 @@ class rigidBody:
         self.position = vector([0, 0])
         self.velocity = vector([0, 0])
         self.currentTime = 0
+        self.bottom = bottom
 
     def compute(self):
         dT = self.currentTime - self.startTime
         totalForce = vector([0, 0])
         for force in self.allForces:
-            totalForce.addToVector(force)
-        totalForce.addToVector(self.gravity)
+            totalForce = totalForce.addToVector(force)
+        totalForce = totalForce.addToVector(self.gravity)
         #Acceleration
-        totalForce.computeWithScalar(self.mass, '/')
+        totalForce = totalForce.computeWithScalar(self.mass, '/')
 
         #Velocity
-        self.velocity.addToVector(totalForce.computeWithScalar(dT, '*'))
+        self.velocity = self.velocity.addToVector(totalForce.computeWithScalar(dT, '*'))
         for i in range(len(self.allImpulses)):
             impulse = copy.deepcopy(self.allImpulses[i])
-            self.velocity.addToVector(impulse.computeWithScalar(self.mass, '/'))
+            self.velocity = self.velocity.addToVector(impulse.computeWithScalar(self.mass, '/'))
         self.allImpulses.clear()
 
         #Position
         velocity = copy.deepcopy(self.velocity)
         self.position = self.position.addToVector(velocity.computeWithScalar(dT, "*"))
 
-        if(self.position.elements[1] >= 550):
-            self.position.elements[1] = 550
+        if(self.position.elements[1] >= 600-self.bottom):
+            self.position.elements[1] = 600-self.bottom
             self.velocity.elements[1] = 0
             self.isGrounded = True
         else:
